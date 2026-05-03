@@ -41,6 +41,14 @@ try {
     $newsItems = $db->query("SELECT id, title, published_at FROM news WHERE status = 'published' ORDER BY published_at DESC LIMIT 3")->fetchAll();
 } catch (\Throwable $e) { $newsItems = []; }
 
+// Stats UI Mapping
+$stat_items = [
+    ['key' => 'students_enrolled', 'label' => 'Students Enrolled'],
+    ['key' => 'courses_offered', 'label' => 'Courses Offered'],
+    ['key' => 'years_experience', 'label' => 'Years Experience'],
+    ['key' => 'pass_rate', 'label' => 'Pass Rate']
+];
+
 // Why Choose Us Data
 $why_us = [
     ['icon' => 'fa-user-tie', 'title' => 'Expert Faculty', 'desc' => 'Learn from top educators with extensive teaching experience.'],
