@@ -1,0 +1,19 @@
+# Database configuration
+includes/config.php
+
+# Uploads and temporary files
+uploads/*
+!uploads/.gitkeep
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHP related
+*.log
+composer.lock (if using composer)
+vendor/
