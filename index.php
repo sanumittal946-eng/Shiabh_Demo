@@ -1,8 +1,11 @@
 <?php
 // index.php
 require_once __DIR__ . '/includes/config.php';
+echo "<!-- DEBUG: CONFIG LOADED -->";
 require_once __DIR__ . '/includes/db.php';
+echo "<!-- DEBUG: DB LOADED -->";
 require_once __DIR__ . '/includes/header.php';
+echo "<!-- DEBUG: HEADER LOADED -->";
 
 $db = getDB();
 
