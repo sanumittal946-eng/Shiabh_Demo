@@ -14,8 +14,10 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?= getSetting('tagline', 'Educational and Coaching Institute') ?>">
+    <?php echo "<!-- DEBUG: TAGLINE CHECK -->"; ?>
     <title><?= getSetting('site_name', 'Sahib Classes') ?> -
         <?= ucfirst($currentPage == 'index' ? 'Home' : $currentPage) ?></title>
+    <?php echo "<!-- DEBUG: TITLE CHECK -->"; ?>
 
     <!-- Open Graph Tags -->
     <meta property="og:title" content="<?= getSetting('site_name', 'Sahib Classes') ?>">
