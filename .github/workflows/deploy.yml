@@ -19,6 +19,9 @@ jobs:
         server: ${{ vars.FTP_SERVER }}
         username: ${{ vars.FTP_USERNAME }}
         password: ${{ vars.FTP_PASSWORD }}
+        port: 21
+        protocol: ftp
+        timeout: 60000 # Increase timeout to 60 seconds
         server-dir: /htdocs/ # InfinityFree uses /htdocs/
         exclude: |
           **/.git*
