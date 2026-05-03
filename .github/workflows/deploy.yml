@@ -22,7 +22,7 @@ jobs:
         port: 21
         protocol: ftp
         timeout: 60000 # Increase timeout to 60 seconds
-        server-dir: /htdocs/ # InfinityFree uses /htdocs/
+        server-dir: /public_html/ # 000webhost uses /public_html/
         exclude: |
           **/.git*
           **/.git*/**
