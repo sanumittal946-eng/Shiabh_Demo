@@ -8,19 +8,28 @@ require_once __DIR__ . '/db.php';
  */
 function getSiteSettings() {
     global $siteSettings;
+    if (!isset($siteSettings) || !is_array($siteSettings)) {
+        $siteSettings = [];
+    }
+    
     if (empty($siteSettings)) {
         try {
             $db = getDB();
-            $stmt = $db->query("SELECT setting_key, setting_value FROM site_settings");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $siteSettings[$row['setting_key']] = $row['setting_value'];
+            if ($db) {
+                $stmt = $db->query("SELECT setting_key, setting_value FROM site_settings");
+                if ($stmt) {
+                    $rows = $stmt->fetchAll();
+                    foreach ($rows as $row) {
+                        $siteSettings[$row['setting_key']] = $row['setting_value'];
+                    }
+                }
             }
-        } catch (Exception $e) {
-            return []; // In case DB not set up yet
+        } catch (\Throwable $e) {
+            // Silently fail if table doesn't exist yet
+            return [];
         }
     }
-    return $siteSettings;
+    return is_array($siteSettings) ? $siteSettings : [];
 }
 
 /**
