@@ -28,5 +28,4 @@ jobs:
           **/.git*/**
           **/node_modules/**
           sql/**
-          includes/config.php
           README.md

@@ -1,5 +1,5 @@
-# Database configuration
-includes/config.php
+# Database configuration (Tracked for Smart Sync)
+# includes/config.php
 
 # Uploads and temporary files
 uploads/*
