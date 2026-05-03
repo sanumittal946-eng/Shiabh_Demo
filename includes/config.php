@@ -16,8 +16,8 @@ if ($is_railway) {
     define('DB_PASS', getenv('MYSQLPASSWORD') ?: 'YqQOYtWuz3e'); 
     define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
     
-    error_reporting(0);
-    ini_set('display_errors', 0);
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
 } else {
     // --- LOCAL (XAMPP) ---
     define('DB_HOST', 'localhost');
