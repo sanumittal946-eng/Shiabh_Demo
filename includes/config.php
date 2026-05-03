@@ -4,61 +4,53 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Detect Environment (Local vs Live)
-$is_local = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1' || strpos($_SERVER['HTTP_HOST'], '192.168') !== false);
+// Detect Environment
+$is_railway = getenv('RAILWAY_ENVIRONMENT') !== false || getenv('MYSQLHOST') !== false;
+$is_local = !$is_railway && ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1');
 
-if ($is_local) {
-    // --- LOCAL SETTINGS (XAMPP) ---
+if ($is_railway) {
+    // --- RAILWAY (LIVE) ---
+    define('DB_HOST', getenv('MYSQLHOST') ?: 'sql207.infinityfree.com'); 
+    define('DB_NAME', getenv('MYSQLDATABASE') ?: 'if0_41820914_XXX'); 
+    define('DB_USER', getenv('MYSQLUSER') ?: 'if0_41820914'); 
+    define('DB_PASS', getenv('MYSQLPASSWORD') ?: 'YqQOYtWuz3e'); 
+    define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
+    
+    error_reporting(0);
+    ini_set('display_errors', 0);
+} else {
+    // --- LOCAL (XAMPP) ---
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'edu_focus');
     define('DB_USER', 'root');
     define('DB_PASS', '');
-    
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-} else {
-    // --- LIVE SETTINGS (INFINITYFREE) ---
-    define('DB_HOST', 'sql207.infinityfree.com'); 
-    define('DB_NAME', 'if0_41820914_XXX'); 
-    define('DB_USER', 'if0_41820914'); 
-    define('DB_PASS', 'YqQOYtWuz3e'); 
+    define('DB_PORT', '3306');
     
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 }
 
-// Application Constraints
 define('SITE_NAME', 'Sahib Classes');
 
-// --- Dynamic BASE_URL: handles local subfolders and live domains automatically ---
 if (!defined('BASE_URL')) {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
         ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     
-    // For local XAMPP, we might be in /edu_website/
     if ($is_local) {
         $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
         $root = rtrim(str_replace('\\', '/', $scriptDir), '/');
-        // Walk up if in subdirectories
-        if (preg_match('#/(admin|student)$#', $root)) {
-            $root = dirname($root);
-        }
+        if (preg_match('#/(admin|student)$#', $root)) { $root = dirname($root); }
         define('BASE_URL', $scheme . '://' . $host . $root);
     } else {
-        // For live, we usually use the domain root
         define('BASE_URL', $scheme . '://' . $host);
     }
 }
 
-// Timezone
 date_default_timezone_set('Asia/Kolkata');
 
-// CSRF Token Generation
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-
-$siteSettings = [];
 ?>
