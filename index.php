@@ -9,11 +9,15 @@ echo "<!-- DEBUG: HEADER LOADED -->";
 
 $db = getDB();
 
-// Fetch Notices
-$notices = $db->query("SELECT title, link, icon FROM notices WHERE is_active = 1 ORDER BY sort_order ASC, id DESC LIMIT 10")->fetchAll();
+// Fetch Data with fallback for empty/missing tables
+try {
+    $notices = $db->query("SELECT title, link, icon FROM notices WHERE is_active = 1 ORDER BY sort_order ASC, id DESC LIMIT 10")->fetchAll();
+} catch (\Throwable $e) { $notices = []; }
 
-// Fetch Stats
-$rawStats = $db->query("SELECT stat_key, stat_value FROM site_stats")->fetchAll();
+try {
+    $rawStats = $db->query("SELECT stat_key, stat_value FROM site_stats")->fetchAll();
+} catch (\Throwable $e) { $rawStats = []; }
+
 $stats = [];
 foreach ($rawStats as $row) {
     preg_match_all('/\d+/', $row['stat_value'], $matches);
@@ -21,19 +25,21 @@ foreach ($rawStats as $row) {
     $stats[$row['stat_key']] = ['num' => $num, 'suffix' => str_replace($num, '', $row['stat_value'])];
 }
 
-// Stats UI Mapping
-$stat_items = [
-    ['key' => 'students_enrolled', 'label' => 'Students Enrolled'],
-    ['key' => 'courses_offered', 'label' => 'Courses Offered'],
-    ['key' => 'years_experience', 'label' => 'Years Experience'],
-    ['key' => 'pass_rate', 'label' => 'Pass Rate']
-];
+try {
+    $featuredCourses = $db->query("SELECT id, name, category, duration, fee FROM courses WHERE is_featured = 1 ORDER BY sort_order ASC LIMIT 6")->fetchAll();
+} catch (\Throwable $e) { $featuredCourses = []; }
 
-// Fetch Courses & Batches
-$featuredCourses = $db->query("SELECT id, name, category, duration, fee FROM courses WHERE is_featured = 1 ORDER BY sort_order ASC LIMIT 6")->fetchAll();
-$batches = $db->query("SELECT b.start_date, b.timing, b.mode, c.name as course_name FROM batches b JOIN courses c ON b.course_id = c.id WHERE b.is_active = 1 AND b.start_date >= CURDATE() ORDER BY b.start_date ASC LIMIT 3")->fetchAll();
-$testimonials = $db->query("SELECT name, course, review, rating, photo FROM testimonials WHERE is_active = 1 LIMIT 3")->fetchAll();
-$newsItems = $db->query("SELECT id, title, published_at FROM news WHERE status = 'published' ORDER BY published_at DESC LIMIT 3")->fetchAll();
+try {
+    $batches = $db->query("SELECT b.start_date, b.timing, b.mode, c.name as course_name FROM batches b JOIN courses c ON b.course_id = c.id WHERE b.is_active = 1 AND b.start_date >= CURDATE() ORDER BY b.start_date ASC LIMIT 3")->fetchAll();
+} catch (\Throwable $e) { $batches = []; }
+
+try {
+    $testimonials = $db->query("SELECT name, course, review, rating, photo FROM testimonials WHERE is_active = 1 LIMIT 3")->fetchAll();
+} catch (\Throwable $e) { $testimonials = []; }
+
+try {
+    $newsItems = $db->query("SELECT id, title, published_at FROM news WHERE status = 'published' ORDER BY published_at DESC LIMIT 3")->fetchAll();
+} catch (\Throwable $e) { $newsItems = []; }
 
 // Why Choose Us Data
 $why_us = [
